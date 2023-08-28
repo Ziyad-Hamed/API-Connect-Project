@@ -1,0 +1,1316 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: test
+  x-ibm-name: test
+basePath: /test
+x-ibm-configuration:
+  properties:
+    target-url:
+      value: https://d94d2e48-8c64-44c8-905e-13385882b9f8.mock.pstmn.io/test
+      description: URL of the proxy policy
+      encoded: false
+  cors:
+    enabled: true
+  gateway: datapower-api-gateway
+  type: rest
+  phase: realized
+  enforced: true
+  testable: true
+  assembly:
+    execute:
+      - switch:
+          version: 2.0.0
+          title: switch
+          case:
+            - condition: $not($header("correlationId") = '1')
+              execute:
+                - throw:
+                    version: 2.1.0
+                    title: throw
+                    name: correlationId
+                    message: correlationId invalde
+            - condition: $not($header("originatingChannel") = '1')
+              execute:
+                - throw:
+                    version: 2.1.0
+                    title: throw
+                    name: OriginatingChannel
+                    message: OriginatingChannel
+            - condition: $not($header("channelRequestId") = '1')
+              execute:
+                - throw:
+                    version: 2.1.0
+                    title: throw
+                    name: channelRequestId
+                    message: channelRequestId invalde
+            - condition: $not($header("originatingUserIdentifier") = '1')
+              execute:
+                - throw:
+                    version: 2.1.0
+                    title: throw
+                    name: originatingUserIdentifier
+                    message: originatingUserIdentifier
+            - condition: $not($header("originatingUserType") = '1')
+              execute:
+                - throw:
+                    version: 2.1.0
+                    title: throw
+                    name: originatingUserType
+                    message: originatingUserType
+            - condition: $not($header("ServiceSlug") = '1')
+              execute:
+                - throw:
+                    version: 2.1.0
+                    title: throw
+                    name: ServiceSlug
+                    message: ServiceSlug
+            - condition: $not($header("serviceEntityId") = '1')
+              execute:
+                - throw:
+                    version: 2.1.0
+                    title: throw
+                    name: serviceEntityId
+                    message: serviceEntityId
+            - otherwise:
+                - switch:
+                    version: 2.0.0
+                    title: switch
+                    case:
+                      - condition: ($httpVerb() = 'GET' and $operationPath() = '/')
+                        execute:
+                          - switch:
+                              version: 2.0.0
+                              title: switch
+                              case:
+                                - condition: $not($exists($queryParameter('NID')))
+                                  execute:
+                                    - throw:
+                                        version: 2.1.0
+                                        title: throw
+                                        name: NoNID
+                                - condition: >-
+                                    ($not($exists($queryParameter('FirstName'))))
+                                  execute:
+                                    - throw:
+                                        version: 2.1.0
+                                        title: throw
+                                        name: NoFirstName
+                                - condition: >-
+                                    (($not($exists($queryParameter('ScondName')))))
+                                  execute:
+                                    - throw:
+                                        version: 2.1.0
+                                        title: throw
+                                        name: NoScondName
+                                - condition: >-
+                                    (($not($exists($queryParameter('ForthName')))))
+                                  execute:
+                                    - throw:
+                                        version: 2.1.0
+                                        title: throw
+                                        name: NoForthName
+                                - condition: >-
+                                    (($not($exists($queryParameter('ThirdName')))))
+                                  execute:
+                                    - throw:
+                                        version: 2.1.0
+                                        title: throw
+                                        name: NoThirdName
+                                - otherwise:
+                                    - invoke:
+                                        version: 2.2.0
+                                        title: invoke
+                                        backend-type: detect
+                                        header-control:
+                                          type: blocklist
+                                          values: []
+                                        parameter-control:
+                                          type: allowlist
+                                          values: []
+                                        http-version: HTTP/1.1
+                                        timeout: 60
+                                        verb: GET
+                                        chunked-uploads: true
+                                        persistent-connection: true
+                                        cache-response: protocol
+                                        cache-ttl: 900
+                                        stop-on-error: []
+                                        websocket-upgrade: false
+                                        target-url: $(target-url)
+                                    - parse:
+                                        version: 2.1.0
+                                        title: parse
+                                        parse-settings-reference:
+                                          default: apic-default-parsesettings
+                                    - map:
+                                        version: 2.0.0
+                                        title: map
+                                        inputs:
+                                          RequestHeader:
+                                            schema:
+                                              type: object
+                                              properties:
+                                                correlationId:
+                                                  type: string
+                                                  name: correlationId
+                                                originatingChannel:
+                                                  type: string
+                                                  name: originatingChannel
+                                                channelRequestId:
+                                                  type: string
+                                                  name: channelRequestId
+                                                originatingUserType:
+                                                  type: string
+                                                  name: originatingUserType
+                                                originatingUserIdentifier:
+                                                  type: string
+                                                  name: originatingUserIdentifier
+                                                serviceEntityId:
+                                                  type: string
+                                                  name: serviceEntityId
+                                                serviceSlug:
+                                                  type: string
+                                                  name: serviceSlug
+                                            variable: request.header
+                                            content: application/json
+                                          RequestParameters:
+                                            schema:
+                                              type: object
+                                              properties:
+                                                NID:
+                                                  type: string
+                                                  name: NID
+                                                FirstName:
+                                                  type: string
+                                                  name: FirstName
+                                                ScondName:
+                                                  type: string
+                                                  name: ScondName
+                                                ThirdName:
+                                                  type: string
+                                                  name: ThirdName
+                                                ForthName:
+                                                  type: string
+                                                  name: ForthName
+                                            variable: request.parameters
+                                            content: application/json
+                                          messageBody:
+                                            schema:
+                                              type: object
+                                              properties:
+                                                UniqueIdentifierNumber:
+                                                  type: string
+                                                  name: UniqueIdentifierNumber
+                                                ClassCode:
+                                                  type: string
+                                                  name: ClassCode
+                                                OfficeCode:
+                                                  type: string
+                                                  name: OfficeCode
+                                                ReqistrationCode:
+                                                  type: string
+                                                  name: ReqistrationCode
+                                                UCD:
+                                                  type: string
+                                                  name: UCD
+                                                LegalDescription:
+                                                  type: string
+                                                  name: LegalDescription
+                                                HasCRA:
+                                                  type: string
+                                                  name: HasCRA
+                                            variable: message.body
+                                            content: application/json
+                                        outputs:
+                                          head:
+                                            schema:
+                                              type: object
+                                              properties:
+                                                correlationId:
+                                                  type: string
+                                                  name: correlationId
+                                                originatingChannel:
+                                                  type: string
+                                                  name: originatingChannel
+                                                channelRequestId:
+                                                  type: string
+                                                  name: channelRequestId
+                                                originatingUserType:
+                                                  type: string
+                                                  name: originatingUserType
+                                                originatingUserIdentifier:
+                                                  type: string
+                                                  name: originatingUserIdentifier
+                                                serviceEntityId:
+                                                  type: string
+                                                  name: serviceEntityId
+                                                serviceSlug:
+                                                  type: string
+                                                  name: serviceSlug
+                                            variable: message.header
+                                            content: application/json
+                                          Body:
+                                            schema:
+                                              type: object
+                                              properties:
+                                                NID:
+                                                  type: string
+                                                  name: NID
+                                                FirstName:
+                                                  type: string
+                                                  name: FirstName
+                                                ScondName:
+                                                  type: string
+                                                  name: ScondName
+                                                ThirdName:
+                                                  type: string
+                                                  name: ThirdName
+                                                ForthName:
+                                                  type: string
+                                                  name: ForthName
+                                                UniqueIdentifierNumber:
+                                                  type: string
+                                                  name: UniqueIdentifierNumber
+                                                ClassCode:
+                                                  type: string
+                                                  name: ClassCode
+                                                OfficeCode:
+                                                  type: string
+                                                  name: OfficeCode
+                                                ReqistrationCode:
+                                                  type: string
+                                                  name: ReqistrationCode
+                                                UCD:
+                                                  type: string
+                                                  name: UCD
+                                                LegalDescription:
+                                                  type: string
+                                                  name: LegalDescription
+                                                HasCRA:
+                                                  type: string
+                                                  name: HasCRA
+                                                ResponseCode:
+                                                  type: string
+                                                  name: ResponseCode
+                                                ResponseMessage:
+                                                  type: string
+                                                  name: ResponseMessage
+                                                FullName:
+                                                  type: string
+                                                  name: FullName
+                                            variable: message.body
+                                            content: application/json
+                                        actions:
+                                          - set: Body.NID
+                                            from: RequestParameters.NID
+                                          - set: head.correlationId
+                                            from: RequestHeader.correlationId
+                                          - set: head.originatingChannel
+                                            from: RequestHeader.originatingChannel
+                                          - set: head.channelRequestId
+                                            from: RequestHeader.channelRequestId
+                                          - set: head.originatingUserType
+                                            from: RequestHeader.originatingUserType
+                                          - set: head.originatingUserIdentifier
+                                            from: RequestHeader.originatingUserIdentifier
+                                          - set: head.serviceEntityId
+                                            from: RequestHeader.serviceEntityId
+                                          - set: head.serviceSlug
+                                            from: RequestHeader.serviceSlug
+                                          - set: Body.FirstName
+                                            from: RequestParameters.FirstName
+                                          - set: Body.ScondName
+                                            from: RequestParameters.ScondName
+                                          - set: Body.ThirdName
+                                            from: RequestParameters.ThirdName
+                                          - set: Body.ForthName
+                                            from: RequestParameters.ForthName
+                                          - set: Body.UniqueIdentifierNumber
+                                            from: messageBody.UniqueIdentifierNumber
+                                          - set: Body.ClassCode
+                                            from: messageBody.ClassCode
+                                          - set: Body.OfficeCode
+                                            from: messageBody.OfficeCode
+                                          - set: Body.ReqistrationCode
+                                            from: messageBody.ReqistrationCode
+                                          - set: Body.UCD
+                                            from: messageBody.UCD
+                                          - set: Body.LegalDescription
+                                            from: messageBody.LegalDescription
+                                          - set: Body.HasCRA
+                                            from: messageBody.HasCRA
+                                          - set: Body.ResponseCode
+                                            value: '''200 Ok'''
+                                            default: ''
+                                          - set: Body.ResponseMessage
+                                            value: '''rresponse ffrom gget vverp'''
+                                            default: ''
+                                          - set: Body.FullName
+                                            value: >-
+                                              $(RequestParameters.FirstName)+ ' '
+                                              +$(RequestParameters.ScondName)+'
+                                              '+$(RequestParameters.ThirdName)+'
+                                              '+$(RequestParameters.ForthName)
+                                        options:
+                                          mapEmulateV4EmptyJSONObject: false
+                                          mapEmulateV4DefaultRequiredProps: false
+                                          mapEnablePostProcessingJSON: false
+                                          mapReferenceLimit: 1
+                      - condition: ($httpVerb() = 'POST' and $operationPath() = '/')
+                        execute:
+                          - map:
+                              version: 2.0.0
+                              title: map
+                              inputs:
+                                input:
+                                  schema:
+                                    type: object
+                                  variable: request.body
+                                  content: application/json
+                              outputs:
+                                output:
+                                  schema:
+                                    type: object
+                                  variable: message.body
+                                  content: application/json
+                              actions:
+                                - set: output
+                                  from: input
+                          - switch:
+                              version: 2.0.0
+                              title: switch
+                              case:
+                                - condition: $not($exists(message.body.NID))
+                                  execute:
+                                    - throw:
+                                        version: 2.1.0
+                                        title: throw
+                                        name: NoNIDRe
+                                - condition: $not($exists(message.body.FirstName))
+                                  execute:
+                                    - throw:
+                                        version: 2.1.0
+                                        title: throw
+                                        name: NoFNameRe
+                                - condition: $not($exists(message.body.ScondName))
+                                  execute:
+                                    - throw:
+                                        version: 2.1.0
+                                        title: throw
+                                        name: NoSNameRe
+                                - condition: $not($exists(message.body.ThirdName))
+                                  execute:
+                                    - throw:
+                                        version: 2.1.0
+                                        title: throw
+                                        name: NoTHNameRe
+                                - condition: $not($exists(message.body.ForthName))
+                                  execute:
+                                    - throw:
+                                        version: 2.1.0
+                                        title: throw
+                                        name: NoForthNameRe
+                                - condition: 'false'
+                                  execute:
+                                    - parse:
+                                        version: 2.1.0
+                                        title: parse
+                                        parse-settings-reference:
+                                          default: apic-default-parsesettings
+                                - otherwise:
+                                    - invoke:
+                                        version: 2.2.0
+                                        title: invoke
+                                        backend-type: detect
+                                        header-control:
+                                          type: blocklist
+                                          values: []
+                                        parameter-control:
+                                          type: allowlist
+                                          values: []
+                                        http-version: HTTP/1.1
+                                        timeout: 60
+                                        verb: GET
+                                        chunked-uploads: true
+                                        persistent-connection: true
+                                        cache-response: protocol
+                                        cache-ttl: 900
+                                        stop-on-error: []
+                                        websocket-upgrade: false
+                                        target-url: $(target-url)
+                                    - parse:
+                                        version: 2.1.0
+                                        title: parse
+                                        parse-settings-reference:
+                                          default: apic-default-parsesettings
+                                    - map:
+                                        version: 2.0.0
+                                        title: map
+                                        inputs:
+                                          RequestHeader:
+                                            schema:
+                                              type: object
+                                              properties:
+                                                correlationId:
+                                                  type: string
+                                                  name: correlationId
+                                                originatingChannel:
+                                                  type: string
+                                                  name: originatingChannel
+                                                channelRequestId:
+                                                  type: string
+                                                  name: channelRequestId
+                                                originatingUserType:
+                                                  type: string
+                                                  name: originatingUserType
+                                                originatingUserIdentifier:
+                                                  type: string
+                                                  name: originatingUserIdentifier
+                                                serviceEntityId:
+                                                  type: string
+                                                  name: serviceEntityId
+                                                serviceSlug:
+                                                  type: string
+                                                  name: serviceSlug
+                                            variable: request.header
+                                            content: application/json
+                                          RequestBody:
+                                            schema:
+                                              type: object
+                                              properties:
+                                                NID:
+                                                  type: string
+                                                  name: NID
+                                                FirstName:
+                                                  type: string
+                                                  name: FirstName
+                                                ScondName:
+                                                  type: string
+                                                  name: ScondName
+                                                ThirdName:
+                                                  type: string
+                                                  name: ThirdName
+                                                ForthName:
+                                                  type: string
+                                                  name: ForthName
+                                            variable: request.body
+                                            content: application/json
+                                          messageBody:
+                                            schema:
+                                              type: object
+                                              properties:
+                                                UniqueIdentifierNumber:
+                                                  type: string
+                                                  name: UniqueIdentifierNumber
+                                                ClassCode:
+                                                  type: string
+                                                  name: ClassCode
+                                                OfficeCode:
+                                                  type: string
+                                                  name: OfficeCode
+                                                ReqistrationCode:
+                                                  type: string
+                                                  name: ReqistrationCode
+                                                UCD:
+                                                  type: string
+                                                  name: UCD
+                                                LegalDescription:
+                                                  type: string
+                                                  name: LegalDescription
+                                                HasCRA:
+                                                  type: string
+                                                  name: HasCRA
+                                            variable: message.body
+                                            content: application/json
+                                        outputs:
+                                          head:
+                                            schema:
+                                              type: object
+                                              properties:
+                                                correlationId:
+                                                  type: string
+                                                  name: correlationId
+                                                originatingChannel:
+                                                  type: string
+                                                  name: originatingChannel
+                                                channelRequestId:
+                                                  type: string
+                                                  name: channelRequestId
+                                                originatingUserType:
+                                                  type: string
+                                                  name: originatingUserType
+                                                originatingUserIdentifier:
+                                                  type: string
+                                                  name: originatingUserIdentifier
+                                                serviceEntityId:
+                                                  type: string
+                                                  name: serviceEntityId
+                                                serviceSlug:
+                                                  type: string
+                                                  name: serviceSlug
+                                            variable: message.header
+                                            content: application/json
+                                          Body:
+                                            schema:
+                                              type: object
+                                              properties:
+                                                NID:
+                                                  type: string
+                                                  name: NID
+                                                FirstName:
+                                                  type: string
+                                                  name: FirstName
+                                                ScondName:
+                                                  type: string
+                                                  name: ScondName
+                                                ThirdName:
+                                                  type: string
+                                                  name: ThirdName
+                                                ForthName:
+                                                  type: string
+                                                  name: ForthName
+                                                UniqueIdentifierNumber:
+                                                  type: string
+                                                  name: UniqueIdentifierNumber
+                                                ClassCode:
+                                                  type: string
+                                                  name: ClassCode
+                                                OfficeCode:
+                                                  type: string
+                                                  name: OfficeCode
+                                                ReqistrationCode:
+                                                  type: string
+                                                  name: ReqistrationCode
+                                                UCD:
+                                                  type: string
+                                                  name: UCD
+                                                LegalDescription:
+                                                  type: string
+                                                  name: LegalDescription
+                                                HasCRA:
+                                                  type: string
+                                                  name: HasCRA
+                                                ResponseCode:
+                                                  type: string
+                                                  name: ResponseCode
+                                                ResponseMessage:
+                                                  type: string
+                                                  name: ResponseMessage
+                                                FullName:
+                                                  type: string
+                                                  name: FullName
+                                            variable: message.body
+                                            content: application/json
+                                        actions:
+                                          - set: Body.NID
+                                            from: RequestBody.NID
+                                          - set: head.correlationId
+                                            from: RequestHeader.correlationId
+                                          - set: head.originatingChannel
+                                            from: RequestHeader.originatingChannel
+                                          - set: head.channelRequestId
+                                            from: RequestHeader.channelRequestId
+                                          - set: head.originatingUserType
+                                            from: RequestHeader.originatingUserType
+                                          - set: head.originatingUserIdentifier
+                                            from: RequestHeader.originatingUserIdentifier
+                                          - set: head.serviceEntityId
+                                            from: RequestHeader.serviceEntityId
+                                          - set: head.serviceSlug
+                                            from: RequestHeader.serviceSlug
+                                          - set: Body.FirstName
+                                            from: RequestBody.FirstName
+                                          - set: Body.ScondName
+                                            from: RequestBody.ScondName
+                                          - set: Body.ThirdName
+                                            from: RequestBody.ThirdName
+                                          - set: Body.ForthName
+                                            from: RequestBody.ForthName
+                                          - set: Body.UniqueIdentifierNumber
+                                            from: messageBody.UniqueIdentifierNumber
+                                          - set: Body.ClassCode
+                                            from: messageBody.ClassCode
+                                          - set: Body.OfficeCode
+                                            from: messageBody.OfficeCode
+                                          - set: Body.ReqistrationCode
+                                            from: messageBody.ReqistrationCode
+                                          - set: Body.UCD
+                                            from: messageBody.UCD
+                                          - set: Body.LegalDescription
+                                            from: messageBody.LegalDescription
+                                          - set: Body.HasCRA
+                                            from: messageBody.HasCRA
+                                          - set: Body.ResponseCode
+                                            value: '''200 OK'''
+                                            default: ''
+                                          - set: Body.ResponseMessage
+                                            value: '''reesponse ffrom ppost vverp'''
+                                            default: ''
+                                          - set: Body.FullName
+                                            value: >-
+                                              $(RequestBody.FirstName)+ ' '
+                                              +$(RequestBody.ScondName)+'
+                                              '+$(RequestBody.ThirdName)+'
+                                              '+$(RequestBody.ForthName)
+                                            default: ''
+                                        options:
+                                          mapEmulateV4EmptyJSONObject: false
+                                          mapEmulateV4DefaultRequiredProps: false
+                                          mapEnablePostProcessingJSON: false
+                                          mapReferenceLimit: 1
+      - map:
+          version: 2.0.0
+          title: map
+          inputs:
+            header:
+              schema:
+                type: object
+                properties:
+                  correlationId:
+                    type: string
+                    name: correlationId
+                  originatingChannel:
+                    type: string
+                    name: originatingChannel
+                  channelRequestId:
+                    type: string
+                    name: channelRequestId
+                  originatingUserType:
+                    type: string
+                    name: originatingUserType
+                  originatingUserIdentifier:
+                    type: string
+                    name: originatingUserIdentifier
+                  serviceEntityId:
+                    type: string
+                    name: serviceEntityId
+                  serviceSlug:
+                    type: string
+                    name: serviceSlug
+              variable: message.header
+              content: application/json
+            body:
+              schema:
+                type: object
+                properties:
+                  NID:
+                    type: string
+                    name: NID
+                  FirstName:
+                    type: string
+                    name: FirstName
+                  ScondName:
+                    type: string
+                    name: ScondName
+                  ThirdName:
+                    type: string
+                    name: ThirdName
+                  ForthName:
+                    type: string
+                    name: ForthName
+                  UniqueIdentifierNumber:
+                    type: string
+                    name: UniqueIdentifierNumber
+                  ClassCode:
+                    type: string
+                    name: ClassCode
+                  OfficeCode:
+                    type: string
+                    name: OfficeCode
+                  ReqistrationCode:
+                    type: string
+                    name: ReqistrationCode
+                  UCD:
+                    type: string
+                    name: UCD
+                  LegalDescription:
+                    type: string
+                    name: LegalDescription
+                  HasCRA:
+                    type: string
+                    name: HasCRA
+                  ResponseCode:
+                    type: string
+                    name: ResponseCode
+                  ResponseMessage:
+                    type: string
+                    name: ResponseMessage
+                  FullName:
+                    type: string
+                    name: FullName
+              variable: message.body
+              content: application/json
+          outputs:
+            header:
+              schema:
+                type: object
+                properties:
+                  Envelope:
+                    type: object
+                    properties:
+                      Header:
+                        type: object
+                        properties:
+                          correlationId:
+                            type: string
+                            xml:
+                              namespace: http://www.example.com/webservice
+                              prefix: web
+                            name: correlationId
+                          originatingChannel:
+                            type: string
+                            xml:
+                              namespace: http://www.example.com/webservice
+                              prefix: web
+                            name: originatingChannel
+                          channelRequestId:
+                            type: string
+                            xml:
+                              namespace: http://www.example.com/webservice
+                              prefix: web
+                            name: channelRequestId
+                          originatingUserType:
+                            type: string
+                            xml:
+                              namespace: http://www.example.com/webservice
+                              prefix: web
+                            name: originatingUserType
+                          originatingUserIdentifier:
+                            type: string
+                            xml:
+                              namespace: http://www.example.com/webservice
+                              prefix: web
+                            name: originatingUserIdentifier
+                          serviceEntityId:
+                            type: string
+                            xml:
+                              namespace: http://www.example.com/webservice
+                              prefix: web
+                            name: serviceEntityId
+                          serviceSlug:
+                            type: string
+                            xml:
+                              namespace: http://www.example.com/webservice
+                              prefix: web
+                            name: serviceSlug
+                        name: Header
+                    xml:
+                      namespace: http://schemas.xmlsoap.org/soap/envelope/
+                      prefix: soapenv
+                    name: Envelope
+                xml:
+                  namespace: ''
+                example: "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:web=\"http://www.example.com/webservice\">\r\n   <soapenv:Header>\r\n      <web:correlationId>1</web:correlationId>\r\n      <web:originatingChannel>1</web:originatingChannel>\r\n      <web:channelRequestId>1</web:channelRequestId>\r\n      <web:originatingUserType>1</web:originatingUserType>\r\n      <web:originatingUserIdentifier>1</web:originatingUserIdentifier>\r\n      <web:serviceEntityId>1</web:serviceEntityId>\r\n      <web:serviceSlug>1</web:serviceSlug>\r\n      <web:X-IBM-Client-Id>9cc4f330ab4c7bef2921f1a8af26fcec</web:X-IBM-Client-Id>\r\n   </soapenv:Header>\r\n</soapenv:Envelope>\r\n"
+              variable: message.header
+              content: text/xml
+            body:
+              schema:
+                type: object
+                properties:
+                  Envelope:
+                    type: object
+                    properties:
+                      Body:
+                        type: object
+                        properties:
+                          RequestMessage:
+                            type: object
+                            properties:
+                              NID:
+                                type: string
+                                name: NID
+                              FirstName:
+                                type: string
+                                name: FirstName
+                              SecondName:
+                                type: string
+                                name: SecondName
+                              ThirdName:
+                                type: string
+                                name: ThirdName
+                              FourthName:
+                                type: string
+                                name: FourthName
+                              UniqueIdentifierNumber:
+                                type: string
+                                name: UniqueIdentifierNumber
+                              ClassCode:
+                                type: string
+                                name: ClassCode
+                              OfficeCode:
+                                type: string
+                                name: OfficeCode
+                              RegistrationCode:
+                                type: string
+                                name: RegistrationCode
+                              UCD:
+                                type: string
+                                name: UCD
+                              LegalDescription:
+                                type: string
+                                name: LegalDescription
+                              HasCRA:
+                                type: string
+                                name: HasCRA
+                              ResponseCode:
+                                type: string
+                                name: ResponseCode
+                              ResponseMessage:
+                                type: string
+                                name: ResponseMessage
+                              FullName:
+                                type: string
+                                name: FullName
+                            xml:
+                              namespace: http://www.example.com/webservice
+                              prefix: web
+                            name: RequestMessage
+                        name: Body
+                    xml:
+                      namespace: http://schemas.xmlsoap.org/soap/envelope/
+                      prefix: soapenv
+                    name: Envelope
+                xml:
+                  namespace: ''
+                example: "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:web=\"http://www.example.com/webservice\">\r\n <soapenv:Body>\r\n      <web:RequestMessage>\r\n         <web:NID>29805131202111</web:NID>\r\n         <web:FirstName>Ziyad</web:FirstName>\r\n         <web:SecondName>Ahmed</web:SecondName>\r\n         <web:ThirdName>Elsayed</web:ThirdName>\r\n         <web:FourthName>Hamed</web:FourthName>\r\n         <web:UniqueIdentifierNumber>12345</web:UniqueIdentifierNumber>\r\n         <web:ClassCode>A</web:ClassCode>\r\n         <web:OfficeCode>O123</web:OfficeCode>\r\n         <web:RegistrationCode>R6789</web:RegistrationCode>\r\n         <web:UCD>UCD-123</web:UCD>\r\n         <web:LegalDescription>Parcel 123, Block A</web:LegalDescription>\r\n         <web:HasCRA>true</web:HasCRA>\r\n         <web:ResponseCode>200 Ok</web:ResponseCode>\r\n         <web:ResponseMessage>rresponse from get verb</web:ResponseMessage>\r\n         <web:FullName>Ziyad Ahmed Elsayed Hamed</web:FullName>\r\n      </web:RequestMessage>\r\n   </soapenv:Body>\r\n</soapenv:Envelope>"
+              variable: message.body
+              content: text/xml
+          actions:
+            - set: header.Envelope.Header.correlationId
+              from: header.correlationId
+            - set: header.Envelope.Header.originatingChannel
+              from: header.originatingChannel
+            - set: header.Envelope.Header.channelRequestId
+              from: header.channelRequestId
+            - set: header.Envelope.Header.originatingUserType
+              from: header.originatingUserType
+            - set: header.Envelope.Header.originatingUserIdentifier
+              from: header.originatingUserIdentifier
+            - set: header.Envelope.Header.serviceEntityId
+              from: header.serviceEntityId
+            - set: header.Envelope.Header.serviceSlug
+              from: header.serviceSlug
+            - set: body.Envelope.Body.RequestMessage
+              from: body
+            - set: body.Envelope.Body.RequestMessage.NID
+              from: body.NID
+            - set: body.Envelope.Body.RequestMessage.FirstName
+              from: body.FirstName
+            - set: body.Envelope.Body.RequestMessage.SecondName
+              from: body.ScondName
+            - set: body.Envelope.Body.RequestMessage.ThirdName
+              from: body.ThirdName
+            - set: body.Envelope.Body.RequestMessage.FourthName
+              from: body.ForthName
+            - set: body.Envelope.Body.RequestMessage.UniqueIdentifierNumber
+              from: body.UniqueIdentifierNumber
+            - set: body.Envelope.Body.RequestMessage.ClassCode
+              from: body.ClassCode
+            - set: body.Envelope.Body.RequestMessage.OfficeCode
+              from: body.OfficeCode
+            - set: body.Envelope.Body.RequestMessage.RegistrationCode
+              from: body.ReqistrationCode
+            - set: body.Envelope.Body.RequestMessage.UCD
+              from: body.UCD
+            - set: body.Envelope.Body.RequestMessage.LegalDescription
+              from: body.LegalDescription
+            - set: body.Envelope.Body.RequestMessage.HasCRA
+              from: body.HasCRA
+            - set: body.Envelope.Body.RequestMessage.ResponseCode
+              from: body.ResponseCode
+            - set: body.Envelope.Body.RequestMessage.ResponseMessage
+              from: body.ResponseMessage
+            - set: body.Envelope.Body.RequestMessage.FullName
+              from: body.FullName
+    finally: []
+    catch:
+      - errors:
+          - correlationId
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde Correlation ID"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"innvalde corrletation id"'
+      - errors:
+          - serviceEntityId
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde serviceEntityId"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"invalde serviceEntityId"'
+      - errors:
+          - ServiceSlug
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde Service Slug"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"invalde Service Slug"'
+      - errors:
+          - originatingUserType
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingUserType"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"invalde originatingUserType"'
+      - errors:
+          - originatingUserIdentifier
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingUserIdentifier"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"invalde originatingUserIdentifier"'
+      - errors:
+          - channelRequestId
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde channelRequestId"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"invalde channelRequestId"'
+      - errors:
+          - OriginatingChannel
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingChannel"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"invalde originatingChannel"'
+      - errors:
+          - NoThirdName
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingChannel"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"NoThirdName"'
+      - errors:
+          - NoForthName
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingChannel"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"NoForthName"'
+      - errors:
+          - NoScondName
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingChannel"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"NoScondName"'
+      - errors:
+          - NoFirstName
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingChannel"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"NoFirstName"'
+      - errors:
+          - NoNID
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingChannel"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"NoNID"'
+      - errors:
+          - NoForthNameRe
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingChannel"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"NNoForthNameInReq"'
+      - errors:
+          - NoTHNameRe
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingChannel"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"NNoThirdNameInReq"'
+      - errors:
+          - NoSNameRe
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingChannel"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"NNoScondNameInReq"'
+      - errors:
+          - NoFNameRe
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingChannel"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"NNoFFirstNameInReq"'
+      - errors:
+          - NoNIDRe
+        execute:
+          - map:
+              version: 2.0.0
+              title: map
+              inputs: {}
+              outputs:
+                output:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        name: message
+                    example: '{"message":"invalde originatingChannel"}'
+                  variable: message.body
+                  content: application/json
+              actions:
+                - set: output.message
+                  value: '"NNoNIDInReq"'
+  activity-log:
+    enabled: true
+    success-content: activity
+    error-content: payload
+paths:
+  /:
+    get:
+      responses:
+        '200':
+          description: success
+          schema:
+            type: string
+      consumes: []
+      produces: []
+      tags: []
+    post:
+      responses:
+        '200':
+          description: success
+          schema:
+            type: string
+      consumes: []
+      produces: []
+securityDefinitions:
+  clientID:
+    type: apiKey
+    in: header
+    name: X-IBM-Client-Id
+security:
+  - clientID: []
+schemes:
+  - https
